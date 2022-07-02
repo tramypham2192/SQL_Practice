@@ -1,0 +1,55 @@
+SELECT * FROM users;
+SELECT * FROM progress;
+
+/* What are the Top 25 schools (.edu domains)? */
+SELECT user_id FROM users LIMIT 25;
+
+/* How many .edu learners are located in New York?*/
+SELECT count(user_id) from users WHERE city="New York";
+
+/* The mobile_app column contains either mobile-user or NULL. How many of these Codecademy learners are using the mobile app? */
+SELECT count(user_id) FROM users WHERE mobile_app="mobile-user";
+
+/* query for the sign up counts for each hour. */
+CREATE TABLE count_hours_signup (
+	hour INT,
+	number_of_signup INT
+);
+
+SELECT strftime('%H', sign_up_at)
+FROM users
+GROUP BY 1;
+
+INSERT INTO count_hours_signup (hour)
+SELECT strftime('%H', sign_up_at)
+FROM users
+GROUP BY 1;
+
+SELECT count(sign_up_at)
+FROM users
+GROUP BY strftime('%H', sign_up_at);
+
+SELECT * from count_hours_signup;
+/* join 2 tables */
+SELECT *
+FROM users 
+INNER JOIN progress 
+ON users.user_id = progress.user_id;
+
+CREATE TABLE newtable as
+SELECT * FROM users
+INNER JOIN progress ON users.user_id =  progress.user_id
+ORDER BY progress.learn_cpp;
+
+/* Do different schools (.edu domains) prefer different courses? */
+SELECT * from newtable
+where learn_cpp!="NULL"
+GROUP BY email_domain;
+
+/* courses that New York students are taking */
+SELECT * from newtable
+WHERE city="New York";
+
+/* courses that New York students are taking */
+SELECT * from newtable
+WHERE city="Chicago";
